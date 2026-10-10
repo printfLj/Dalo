@@ -1,0 +1,26 @@
+# Daló — Git ignore rules
+# Never commit real credentials, environment-specific config, or IDE noise.
+
+# Database credentials (real file; copy db.example.php and fill in)
+config/db.php
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# PHP error logs
+*.log
+error_log
+
+# OS / editor artefacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Composer (not used in this project, but guard against accidental addition)
+vendor/
+composer.lock

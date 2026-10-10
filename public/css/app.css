@@ -1,0 +1,430 @@
+/* ============================================================================
+   Daló — Application Stylesheet
+   Mobile-first, accessible, no external dependencies.
+   ============================================================================ */
+
+/* --------------------------------------------------------------------------
+   Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+    /* Brand colours */
+    --color-brand:         hsl(232, 72%, 52%);
+    --color-brand-dark:    hsl(232, 72%, 42%);
+    --color-brand-light:   hsl(232, 72%, 96%);
+
+    /* Neutrals */
+    --color-bg:            hsl(220, 20%, 97%);
+    --color-surface:       hsl(0, 0%, 100%);
+    --color-border:        hsl(220, 15%, 88%);
+    --color-text:          hsl(220, 20%, 15%);
+    --color-text-muted:    hsl(220, 10%, 48%);
+
+    /* Semantic */
+    --color-error:         hsl(0, 72%, 48%);
+    --color-error-bg:      hsl(0, 100%, 97%);
+    --color-success:       hsl(142, 60%, 36%);
+    --color-success-bg:    hsl(142, 60%, 96%);
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+
+    /* Typography */
+    --font-family:  'Inter', system-ui, -apple-system, sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+    --line-height:  1.6;
+
+    /* Borders / Radii */
+    --radius-sm:  0.25rem;
+    --radius-md:  0.5rem;
+    --radius-lg:  0.75rem;
+
+    /* Shadows */
+    --shadow-sm:  0 1px 3px hsl(220 20% 10% / 0.08);
+    --shadow-md:  0 4px 16px hsl(220 20% 10% / 0.10);
+
+    /* Transitions */
+    --transition: 150ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   Reset / base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    min-height: 100dvh;
+}
+
+/* Import Inter from Google Fonts — load asynchronously to avoid render-blocking */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+img, svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Authentication page layout
+   -------------------------------------------------------------------------- */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: var(--space-6) var(--space-4);
+    background: linear-gradient(
+        135deg,
+        hsl(232, 72%, 96%) 0%,
+        hsl(220, 20%, 97%) 100%
+    );
+}
+
+.auth-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-8) var(--space-8);
+    width: 100%;
+    max-width: 26rem;
+    border: 1px solid var(--color-border);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.brand {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-brand);
+    letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+    font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Application page layout
+   -------------------------------------------------------------------------- */
+.app-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+/* Top navigation bar */
+.topbar {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+.topbar__brand {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-brand);
+    letter-spacing: -0.01em;
+}
+
+.topbar__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.topbar__user {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 12rem;
+}
+
+.topbar__logout-form {
+    margin: 0;
+}
+
+/* Page content area */
+.page-content {
+    flex: 1;
+    padding: var(--space-8) var(--space-5);
+    max-width: 48rem;
+    margin-inline: auto;
+    width: 100%;
+}
+
+.page-header {
+    margin-bottom: var(--space-8);
+}
+
+.page-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+    font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Card
+   -------------------------------------------------------------------------- */
+.card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-8);
+}
+
+/* --------------------------------------------------------------------------
+   Alerts
+   -------------------------------------------------------------------------- */
+.alert {
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-sm);
+}
+
+.alert--error {
+    background: var(--color-error-bg);
+    border: 1px solid hsl(0, 72%, 85%);
+    color: var(--color-error);
+}
+
+.alert--success {
+    background: var(--color-success-bg);
+    border: 1px solid hsl(142, 60%, 78%);
+    color: var(--color-success);
+}
+
+.alert__list {
+    margin: 0;
+    padding-left: var(--space-5);
+}
+
+.alert__list li + li {
+    margin-top: var(--space-1);
+}
+
+/* --------------------------------------------------------------------------
+   Form components
+   -------------------------------------------------------------------------- */
+.auth-form,
+.event-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* Side-by-side row (date + time) */
+.form-row {
+    display: flex;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+}
+
+.form-group--half {
+    flex: 1 1 10rem;
+    min-width: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.required {
+    color: var(--color-error);
+    margin-left: var(--space-1);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-md);
+    font-family: inherit;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.form-input:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px hsl(232, 72%, 52%, 0.18);
+}
+
+.form-group--error .form-input {
+    border-color: var(--color-error);
+}
+
+.form-group--error .form-input:focus {
+    box-shadow: 0 0 0 3px hsl(0, 72%, 48%, 0.15);
+}
+
+.form-input--narrow {
+    max-width: 12rem;
+}
+
+.form-error {
+    font-size: var(--font-size-sm);
+    color: var(--color-error);
+}
+
+.form-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.form-note {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-size-md);
+    font-family: inherit;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition),
+                box-shadow var(--transition), color var(--transition);
+    text-decoration: none;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.btn:focus-visible {
+    outline: 3px solid hsl(232, 72%, 52%, 0.5);
+    outline-offset: 2px;
+}
+
+/* Primary */
+.btn--primary {
+    background: var(--color-brand);
+    color: hsl(0, 0%, 100%);
+    border-color: var(--color-brand);
+}
+
+.btn--primary:hover {
+    background: var(--color-brand-dark);
+    border-color: var(--color-brand-dark);
+}
+
+.btn--primary:active {
+    transform: translateY(1px);
+}
+
+/* Ghost (for topbar sign-out) */
+.btn--ghost {
+    background: transparent;
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+}
+
+.btn--ghost:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+/* Full-width */
+.btn--full {
+    width: 100%;
+}
+
+/* Small */
+.btn--sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+    .auth-card {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .card {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .topbar__user {
+        display: none; /* show only sign-out on very small screens */
+    }
+}

@@ -1,0 +1,35 @@
+# Daló — Apache configuration for the public/ web root.
+# Place this file at the server's document root (public/).
+# Only the public/ directory should be served; src/ and config/ must be
+# outside or denied.
+
+# Note: HTTPS redirection should be configured by the hosting provider 
+# or use a deployment-configured strict host allowlist to prevent 
+# HTTP_HOST reflection attacks.
+RewriteEngine On
+
+# Route all requests through index.php when the file/directory does not exist.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(self), microphone=(), geolocation=()"
+</IfModule>
+
+# Deny access to hidden files (e.g. .git, .env).
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Deny direct access to PHP files inside subdirectories that shouldn't be
+# entry points (extend this list as the app grows).
+<FilesMatch "\.php$">
+    <RequireAll>
+        Require all granted
+    </RequireAll>
+</FilesMatch>
