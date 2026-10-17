@@ -130,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Redirect-after-POST to prevent duplicate submissions on refresh.
             $_SESSION['_flash_success'] = 'Event created successfully (ID ' . $newEventId . ').';
+            $_SESSION['_flash_registration_event_id'] = $newEventId;
             header('Location: /events/create.php', true, 303);
             exit;
 
@@ -151,4 +152,13 @@ $flashSuccess = null;
 if (!empty($_SESSION['_flash_success'])) {
     $flashSuccess = $_SESSION['_flash_success'];
     unset($_SESSION['_flash_success']);
+}
+
+$flashRegistrationEventId = null;
+if (isset($_SESSION['_flash_registration_event_id'])) {
+    $candidateEventId = $_SESSION['_flash_registration_event_id'];
+    if (is_int($candidateEventId) && $candidateEventId > 0) {
+        $flashRegistrationEventId = $candidateEventId;
+    }
+    unset($_SESSION['_flash_registration_event_id']);
 }

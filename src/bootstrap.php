@@ -127,6 +127,75 @@ function csrf_verify(): void
 }
 
 // ---------------------------------------------------------------------------
+// Throttle HMAC secret helper
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the HMAC secret used to key throttle identifiers, or false if the
+ * secret is not configured, is still the placeholder value from db.example.php,
+ * or does not meet the minimum strength requirement.
+ *
+ * The secret MUST be set in config/db.php under the key 'throttle_hmac_secret'.
+ * It must be exactly 64 hexadecimal characters generated from 32 random bytes.
+ * Generate it with:
+ *
+ *   php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
+ *
+ * If this function returns false, the caller MUST fail closed — no login
+ * attempt should be processed and no throttle record should be written.
+ *
+ * There is NO fallback. A missing, empty, or incorrectly formatted secret
+ * causes the login page to return a generic system error until the operator
+ * sets a valid secret. This is intentional: silently falling back to a
+ * predictable value (e.g. derived from the DSN) would allow an attacker who
+ * can read the DSN to reconstruct all throttle keys and bypass rate limiting.
+ *
+ * The placeholder string 'REPLACE_WITH_64_HEX_CHARS_FROM_bin2hex_random_bytes_32'
+ * from config/db.example.php is explicitly rejected so that an operator who
+ * copies the file without changing the placeholder cannot silently run with a
+ * known value.
+ *
+ * The raw IP address and raw email address are not persisted in
+ * login_attempts; only the HMAC digest appears in that table.
+ *
+ * @return string|false  The validated secret string, or false on misconfiguration.
+ */
+function throttle_hmac_secret(): string|false
+{
+    static $secret = null;
+    if ($secret !== null) {
+        return $secret;
+    }
+
+    $configPath = dirname(__DIR__) . '/config/db.php';
+    $cfg = file_exists($configPath) ? require $configPath : [];
+
+    $candidate = $cfg['throttle_hmac_secret'] ?? null;
+
+    // Reject missing, non-string, or empty values.
+    if (!is_string($candidate) || $candidate === '') {
+        $secret = false;
+        return false;
+    }
+
+    // Reject the literal placeholder from db.example.php.
+    if ($candidate === 'REPLACE_WITH_64_HEX_CHARS_FROM_bin2hex_random_bytes_32') {
+        $secret = false;
+        return false;
+    }
+
+    // Provisioning generates exactly 64 hexadecimal characters from
+    // random_bytes(32). Reject arbitrary strings even when they are long.
+    if (preg_match('/\A[a-f0-9]{64}\z/i', $candidate) !== 1) {
+        $secret = false;
+        return false;
+    }
+
+    $secret = $candidate;
+    return $secret;
+}
+
+// ---------------------------------------------------------------------------
 // Authorization helpers
 // ---------------------------------------------------------------------------
 

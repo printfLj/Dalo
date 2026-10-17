@@ -72,19 +72,33 @@ CREATE TABLE `users` (
 
 -- ---------------------------------------------------------------------------
 -- Table: login_attempts
--- Tracks failed login attempts by IP and email to mitigate brute-force attacks.
--- Records should be purged periodically after expiration (e.g. 15 minutes).
+-- Tracks login POST attempts by IP address and (for valid addresses) email to
+-- mitigate brute-force attacks. The `id` column stores a domain-prefixed
+-- HMAC-SHA-256 hex digest; raw IP/email values are never persisted here.
+--
+-- Throttling uses fixed 15-minute windows. At most 50 expired rows are deleted
+-- during each login POST using the last_attempt index. This bounds deletions
+-- per request, but does not guarantee wall-clock erasure during inactivity;
+-- configure scheduled cleanup when a strict retention deadline is required.
 -- ---------------------------------------------------------------------------
 CREATE TABLE `login_attempts` (
-    `id`           VARCHAR(191)     NOT NULL COMMENT 'Format: ip:<address> or email:<address>',
+    `id`           VARCHAR(77)      NOT NULL
+                   COMMENT 'ip:/email: prefix plus domain-separated HMAC-SHA-256 hex; no raw IP/email.',
     `attempts`     INT UNSIGNED     NOT NULL DEFAULT 1,
+    `window_start` DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP
+                   COMMENT 'Timestamp of the first counted login POST in the current fixed window.',
     `last_attempt` DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP
                                              ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT `pk_login_attempts` PRIMARY KEY (`id`)
+    CONSTRAINT `pk_login_attempts` PRIMARY KEY (`id`),
+
+    -- Supports the bounded-retention DELETE that runs on every login request.
+    -- Without this index, the cleanup DELETE would scan the entire table.
+    INDEX `idx_login_attempts_last` (`last_attempt`)
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+  COLLATE=utf8mb4_unicode_ci
+  COMMENT='Short-lived login throttling counters using fixed windows.';
 
 -- ---------------------------------------------------------------------------
 -- Table: events

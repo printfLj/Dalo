@@ -52,6 +52,13 @@ $user = current_user(); // guaranteed non-null by require_organizer() in logic l
     <div class="alert alert--success" role="status" aria-live="polite">
         <?= e($flashSuccess) ?>
     </div>
+    <?php if ($flashRegistrationEventId !== null): ?>
+    <p class="registration-share-link">
+        Student registration link:
+        <a href="/register.php?event_id=<?= $flashRegistrationEventId ?>">/register.php?event_id=<?= $flashRegistrationEventId ?></a>
+        <span>Share this link with students.</span>
+    </p>
+    <?php endif; ?>
     <?php endif; ?>
 
     <?php if (!empty($errors['_general'])): ?>
@@ -185,8 +192,8 @@ $user = current_user(); // guaranteed non-null by require_organizer() in logic l
 
         <p class="form-note">
             <span class="required" aria-hidden="true">*</span> Required fields.
-            Registration capacity closure will be enforced when the student
-            registration module is available.
+            Students can register through the event-specific link shown after
+            this event is created. Registration closes automatically at capacity.
         </p>
     </form>
 </main>
